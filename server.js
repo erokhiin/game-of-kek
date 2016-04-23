@@ -34,10 +34,8 @@ if (isDeveloping) {
   app.use(middleware);
   app.get('/room', function response(req, res) {
     console.log('i work');
-    console.log(isFirst);
     res.write(middleware.fileSystem.readFileSync(path.join(__dirname, isFirst ? 'dist/index.html' : 'dist/pad.html')));
     isFirst = false;
-    console.log(isFirst);
     res.end();
   });
 } else {
@@ -249,10 +247,16 @@ wss.on('connection', function connection(ws) {
     console.log('add pad');
     const player = new Player(ws, 300, 300, 30, '#ff0000', 200);
     world.add(player);
-    player.setDirection(-0.21, -0.5);
+    // player.setDirection(-0.21, -0.5);
 
     ws.on('message', function incoming(message) {
-      console.log('received: %s', message);
+      const msg = JSON.parse(message);
+
+      switch (msg.type) {
+        case 'nipple': 
+          player.setDirection(msg.data.x, msg.data.y);
+          break;
+      }
     });
 
     ws.send('something');
