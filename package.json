@@ -26,7 +26,8 @@
     "jscs": "jscs ."
   },
   "dependencies": {
-    "babel-cli": "^6.4.0"
+    "babel-cli": "^6.4.0",
+    "ws": "^1.1.0"
   },
   "devDependencies": {
     "autoprefixer": "^6.0.3",

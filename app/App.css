@@ -1,10 +1,8 @@
-.app {
-  background-color: green;
-  height: 50px;
-  border: 1px solid blue;
+* {
+    margin: 0;
+    padding: 0;
 }
 
-.bap {
-  background-color: red;
-  height: 25px;
+canvas {
+    border: 1px solid red;  
 }

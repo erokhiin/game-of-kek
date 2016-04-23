@@ -5,9 +5,13 @@ const express = require('express');
 const webpack = require('webpack');
 const webpackMiddleware = require('webpack-dev-middleware');
 const config = require('./webpack.config.js');
-
+const ws = require('ws');
 const isDeveloping = process.env.NODE_ENV !== 'production';
 const port = isDeveloping ? 3000 : process.env.PORT;
+const server = require('http').createServer();
+const WebSocketServer = require('ws').Server;
+const wss = new WebSocketServer({ server: server });
+
 const app = express();
 
 if (isDeveloping) {
@@ -37,9 +41,15 @@ if (isDeveloping) {
   });
 }
 
-app.listen(port, '0.0.0.0', function onStart(err) {
-  if (err) {
-    console.log(err);
-  }
-  console.info('==> 🌎 Listening on port %s. Open up http://0.0.0.0:%s/ in your browser.', port, port);
+wss.on('connection', function connection(ws) {
+  
+  ws.on('message', function incoming(message) {
+    console.log('received: %s', message);
+  });
+
+  ws.send('something');
 });
+
+
+server.on('request', app);
+server.listen(port, function () { console.log('Listening on ' + server.address().port) });
