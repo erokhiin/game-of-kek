@@ -6,9 +6,10 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   devtool: 'eval-source-map',
-  entry: [
-    path.join(__dirname, 'app/main.js')
-  ],
+  entry: {
+    main: path.join(__dirname, 'app/main.js'),
+    pad: path.join(__dirname, 'app/pad.js'),
+  },
   output: {
     path: path.join(__dirname, '/dist/'),
     filename: '[name].js',
@@ -18,8 +19,25 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: 'app/index.tpl.html',
       inject: 'body',
+      chunks: ['main'],
       filename: 'index.html'
     }),
+    new HtmlWebpackPlugin({
+      template: 'app/pad.tpl.html',
+      inject: 'body',
+      chunks: ['pad'],
+      filename: 'pad.html'
+    }),
+    // new HtmlWebpackPlugin({
+    //   template: 'app/pad.tpl.html',
+    //   inject: 'body',
+    //   // chunks: {
+    //   //   body: {
+    //   //     entry: 'pad'
+    //   //   }
+    //   // },
+    //   filename: 'pad.html'
+    // }),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.NoErrorsPlugin(),
     new webpack.DefinePlugin({
