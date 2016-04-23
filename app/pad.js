@@ -13,6 +13,7 @@ window.addEventListener('load', function() {
   let nippleTouch;
   let btnTouch;
   let nippleR;
+  let nippleInR;
 
   // nipple
 
@@ -21,12 +22,11 @@ window.addEventListener('load', function() {
     nipple.style.left = x + 'px';
   }
 
-  function checkIntersection(el, x, y, rm = 0) {
+  function checkIntersection(el, x, y, r, rm = 0) {
     const _x = x - el.offsetTop;
     const _y = y - el.offsetLeft;
-    const _r = nippleR + rm;
 
-    if (Math.pow(_x - _r + rm, 2) + Math.pow(_y - _r + rm, 2) < Math.pow(_r, 2)) {
+    if (Math.pow(_x - r + rm, 2) + Math.pow(_y - r + rm, 2) < Math.pow(r, 2)) {
       return { x: _x, y: _y };
     } else {
       return false; 
@@ -47,11 +47,11 @@ window.addEventListener('load', function() {
 
       switch(touch.identifier) {
         case nippleTouch:
-          let intersection = checkIntersection(nippleWrap, touch.pageX, touch.pageY, -(nipple.offsetWidth / 2));
+          const _r = nippleR - nipple.offsetWidth / 2;
+          let intersection = checkIntersection(nippleWrap, touch.pageX, touch.pageY, _r, -(nipple.offsetWidth / 2));
           if (!intersection) {
-            const _r = nippleR - nipple.offsetWidth / 2;
-            const x1 = nippleWrap.offsetLeft + _r;
-            const y1 = nippleWrap.offsetTop + _r;
+            const x1 = nippleWrap.offsetLeft + nippleR;
+            const y1 = nippleWrap.offsetTop + nippleR;
             const x2 = touch.pageX;
             const y2 = touch.pageY;
             const d = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
@@ -61,14 +61,13 @@ window.addEventListener('load', function() {
             };
           }
           posNipple(intersection);
-          const _r = nippleR - nipple.offsetWidth / 2;
-          socket.send(JSON.stringify({
-            type: 'nipple',
-            data: {
-              x: (intersection.x - nippleR) / _r,
-              y: (intersection.y - nippleR) / _r
-            }
-          }));
+          // socket.send(JSON.stringify({
+          //   type: 'nipple',
+          //   data: {
+          //     x: (intersection.x - nippleR) / _r,
+          //     y: (intersection.y - nippleR) / _r
+          //   }
+          // }));
           break;
 
         case btnTouch:
