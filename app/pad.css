@@ -10,6 +10,12 @@ body {
   -webkit-tap-highlight-color: none;
 }
 
+body {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+}
+
 .pad {
   position: relative;
   height: 100%;
@@ -17,7 +23,7 @@ body {
   -webkit-tap-highlight-color: none;
 }
 
-.pad__nipple-wrap {
+.pad__boob {
   position: absolute;
   top: 15%;
   height: 70%;
@@ -26,7 +32,7 @@ body {
   -webkit-tap-highlight-color: none;
 }
 
-.pad__nipple-wrap:after {
+.pad__boob:after {
   content: '';
   display: block;
   position: absolute;
@@ -37,7 +43,7 @@ body {
   -webkit-tap-highlight-color: none;
 }
 
-.pad__nipple-wrap:before {
+.pad__boob:before {
   content: '';
   display: block;
   position: absolute;
@@ -50,12 +56,35 @@ body {
 
 .pad__nipple {
   position: absolute;
-  width: 25%;
+  width: 30%;
   background-color: #3333f3;
   border-radius: 50%;
   opacity: 0.5;
   z-index: 1;
   -webkit-tap-highlight-color: none;
+}
+
+.pad__btn:after,
+.pad__nipple:before {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  top: -5px;
+  right: -5px;
+  bottom: -5px;
+  left: -5px;
+  border: 5px solid #3333f3;
+  opacity: 0.25;
+  transition: opacity ease .1s;
+  box-sizing: border-box;
+}
+
+.pad__nipple.i-back {
+  transition: top ease .075s, left ease .075s;
+}
+
+.pad__nipple.i-back:before {
+  opacity: 0;
 }
 
 .pad__nipple:after {
@@ -72,4 +101,13 @@ body {
   border-radius: 50%;
   background-color: #f37777;
   -webkit-tap-highlight-color: none;
+}
+
+.pad__btn:after {
+  border: 5px solid #f37777;
+  opacity: 0;
+}
+
+.pad__btn.i-active:after {
+  opacity: 0.3;
 }

@@ -6,14 +6,14 @@ window.addEventListener('load', function() {
 
   // blocks
 
-  const nippleWrap = document.querySelector('.pad__nipple-wrap');
+  const boob = document.querySelector('.pad__boob');
   const nipple = document.querySelector('.pad__nipple');
   const btn = document.querySelector('.pad__btn');
   let nippleSide;
   let nippleTouch;
   let btnTouch;
-  let nippleR;
-  let nippleInR;
+  let boobR;
+  let boobInR;
 
   // nipple
 
@@ -33,72 +33,97 @@ window.addEventListener('load', function() {
     }
   }
 
-  nippleWrap.addEventListener('touchstart', function(e) {
+  function handleNippleTouch(touch) {
+    let intersection = checkIntersection(boob, touch.pageX, touch.pageY, boobInR, -(nipple.offsetWidth / 2));
+    if (!intersection) {
+      const x1 = boob.offsetLeft + boobR;
+      const y1 = boob.offsetTop + boobR;
+      const x2 = touch.pageX;
+      const y2 = touch.pageY;
+      const d = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+      intersection = {
+        x: ((x2 - x1) / d * boobInR) + boobR,
+        y: ((y2 - y1) / d * boobInR) + boobR
+      };
+    }
+    posNipple(intersection);
+    // socket.send(JSON.stringify({
+    //   type: 'nipple',
+    //   data: {
+    //     x: (intersection.x - boobR) / boobInR,
+    //     y: (intersection.y - boobR) / boobInR
+    //   }
+    // }));
+  }
+
+  function upButton() {
+    btnTouch = false;
+    btn.classList.remove('i-active');
+    // socket.send(JSON.stringify({
+    //   type: 'btn',
+    //   data: 'up'
+    // }));
+  }
+
+  boob.addEventListener('touchstart', function(e) {
+    nipple.classList.remove('i-back');
     nippleTouch = e.targetTouches[e.targetTouches.length - 1].identifier;
+    handleNippleTouch(e.targetTouches[e.targetTouches.length - 1]);
   }, false);
 
   btn.addEventListener('touchstart', function(e) {
-    btnTouch = e.targetTouches[e.targetTouches.length - 1];
+    btn.classList.add('i-active');
+    btnTouch = e.targetTouches[e.targetTouches.length - 1].identifier;
+    // socket.send(JSON.stringify({
+    //   type: 'btn',
+    //   data: 'down'
+    // }));
   }, false);
 
   window.addEventListener('touchmove', function(e) {
     for (let i = 0; i < e.changedTouches.length; i++) {
       const touch = e.changedTouches[i];
-
       switch(touch.identifier) {
         case nippleTouch:
-          const _r = nippleR - nipple.offsetWidth / 2;
-          let intersection = checkIntersection(nippleWrap, touch.pageX, touch.pageY, _r, -(nipple.offsetWidth / 2));
-          if (!intersection) {
-            const x1 = nippleWrap.offsetLeft + nippleR;
-            const y1 = nippleWrap.offsetTop + nippleR;
-            const x2 = touch.pageX;
-            const y2 = touch.pageY;
-            const d = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-            intersection = {
-              x: ((x2 - x1) / d * _r) + nippleR,
-              y: ((y2 - y1) / d * _r) + nippleR
-            };
-          }
-          posNipple(intersection);
-          // socket.send(JSON.stringify({
-          //   type: 'nipple',
-          //   data: {
-          //     x: (intersection.x - nippleR) / _r,
-          //     y: (intersection.y - nippleR) / _r
-          //   }
-          // }));
+          handleNippleTouch(touch);
           break;
-
         case btnTouch:
-
+          if (!checkIntersection(btn, touch.pageX, touch.pageY, btn.offsetWidth / 2)) {
+            upButton();
+          }
           break;
-
       }
     }
   }, false);
 
   window.addEventListener('touchend', function(e) {
-    // console.log(e);
-    console.log('end');
+    for (let i = 0; i < e.changedTouches.length; i++) {
+      switch(e.changedTouches[i].identifier) {
+        case nippleTouch:
+          nippleTouch = false;
+          nipple.classList.add('i-back');
+          posNipple({ x: boobR, y: boobR });
+          break;
+        case btnTouch:
+          upButton();
+          break;
+      }
+    }
   }, false);
-
-
-  //
-
 
   // resize
 
   function resize() {
-    nippleWrap.style.width = nippleWrap.offsetHeight + 'px';
-    nippleWrap.style.left = nippleWrap.offsetTop + 'px';
+    boob.style.width = boob.offsetHeight + 'px';
+    boob.style.left = boob.offsetTop + 'px';
     btn.style.width = btn.offsetHeight + 'px';
-    btn.style.right = nippleWrap.style.left;
+    btn.style.right = boob.style.left;
     nippleSide = nipple.offsetWidth;
-    nippleR = nippleWrap.offsetWidth / 2;
+    boobR = boob.offsetWidth / 2;
+    boobInR = boobR - nipple.offsetWidth / 2
     nipple.style.marginLeft = nipple.style.marginTop = (- nippleSide / 2) + 'px';
     if (!nippleTouch) {
-      posNipple({ x: nippleR, y: nippleR });
+      posNipple({ x: boobR, y: boobR });
     }
   };
 
