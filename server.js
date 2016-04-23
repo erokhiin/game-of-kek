@@ -14,7 +14,7 @@ const WebSocketServer = require('ws').Server;
 const wss = new WebSocketServer({ server: server });
 
 const app = express();
-const isFirst = false;
+let isFirst = true;
 
 if (isDeveloping) {
   const compiler = webpack(config);
@@ -35,7 +35,7 @@ if (isDeveloping) {
   app.get('/room', function response(req, res) {
     console.log('i work');
     console.log(isFirst);
-    res.write(middleware.fileSystem.readFileSync(path.join(__dirname, !isFirst ? 'dist/index.html' : 'dist/pad.html')));
+    res.write(middleware.fileSystem.readFileSync(path.join(__dirname, isFirst ? 'dist/index.html' : 'dist/pad.html')));
     isFirst = false;
     console.log(isFirst);
     res.end();
@@ -47,10 +47,10 @@ if (isDeveloping) {
   });
 }
 
-const FPS = 1000/10;
+const FPS = 1000/50;
 
 class World {
-  constructor(h, w) { // in points (px)
+  constructor(w, h) { // in points (px)
     this.h = h;
     this.w = w;
     this.objs = [];
@@ -61,24 +61,76 @@ class World {
   }
 
   setIn(obj) {
-    obj.x = Math.min(Math.max(0, obj.x), this.w);
-    obj.y = Math.min(Math.max(0, obj.y), this.h);
+    if (obj.type == 'circle') {
+      obj.x = Math.min(Math.max(0 + obj.r, obj.x), this.w - obj.r);
+      obj.y = Math.min(Math.max(0 + obj.r, obj.y), this.h - obj.r);
+    } else if (obj.type == 'rect') {
+      obj.x = Math.min(Math.max(0 + obj.w / 2, obj.x), this.w - obj.w / 2);
+      obj.y = Math.min(Math.max(0 + obj.h / 2, obj.y), this.h - obj.h / 2);
+    }
   }
 }
 
 class Obj {
-  constructor(x, y, h, w, isStatic) {
+  constructor(x, y, c, isStatic) {
     this.x = x;
     this.y = y;
-    this.h = h;
-    this.w = w; 
+    this.c = c;
     this.isStatic = isStatic === undefined ? true : isStatic;
+  }
+
+  toJSON() {
+    return {
+      x: this.x,
+      y: this.y,
+      c: this.c,
+      t: 'obj',
+    }
   }
 }
 
-class Player extends Obj {
-  constructor(ws, x, y, h, w, speed) { // speed in points per second
-    super(x, y, h, w, false);
+class Rect extends Obj {
+  constructor(x, y, w, h, c, isStatic) {
+    super(x, y, c, isStatic);
+    this.w = w;
+    this.h = h;
+    this.type = 'rect';
+  }
+
+  toJSON() {
+    return {
+      x: this.x,
+      y: this.y,
+      w: this.w,
+      h: this.h,
+      c: this.c,
+      t: this.type,
+    }
+  }
+}
+
+class Circle extends Obj {
+  constructor(x, y, r, c, isStatic) {
+    super(x, y, c, isStatic);
+
+    this.r = r;
+    this.type = 'circle';
+  }
+
+  toJSON() {
+    return {
+      x: this.x,
+      y: this.y,
+      r: this.r,
+      c: this.c,
+      t: this.type,
+    }
+  }
+}
+
+class Player extends Circle {
+  constructor(ws, x, y, r, c, speed) { // speed in points per second
+    super(x, y, r, c, false);
     this.ws = ws;
 
     this.speed = speed;
@@ -88,19 +140,47 @@ class Player extends Obj {
   }
 
   setDirection(dx, dy) {
-    if (dx < dy) {
-      this.dy = dy;
-      this.dx = 0;   
-    } else if (dx > dy) {
-      this.dx = dx;
-      this.dy = 0; 
-    } else if (dx == dy && !dx) {
-      dx
-    }
+    this.dx = dx;
+    this.dy = dy;
   }
 
-  update(world, statics, dtTime) {
+  update(world, dtTime) {
+    let dt = { 
+      dx: (this.dx * dtTime * this.speed / 1000),
+      dy: (this.dy * dtTime * this.speed / 1000),
+    };
 
+    dt = world.objs.reduce((dt, obj) => this !== obj ? this.hitTest(obj, dt.dx, dt.dy) : dt, dt); 
+
+    this.x += dt.dx;
+    this.y += dt.dy;
+
+    world.setIn(this);
+  }
+
+  hitTest(obj, dx, dy) {
+    switch (obj.type) {
+      case 'circle': {
+        let x = this.x + dx;
+        let y = this.y + dx;
+        let r2 = this.r + obj.r;
+        const dist = Math.pow(x - obj.x, 2) + Math.pow(y - obj.y, 2)
+        if (dist < Math.pow(r2, 2)) {
+          
+          const newDy = (y - obj.y) / dist * r2;
+          const newDx = (x - obj.x) / dist * r2;
+
+          return { dx: newDx, dy: newDy };
+
+        } else {
+          return { dx, dy };
+        }
+      }
+
+      case 'rect': {
+        return { dx, dy }
+      }
+    }
   }
 }
 
@@ -110,7 +190,7 @@ class Game {
     this.world = world;
   }
 
-  run() {
+  start() {
     let oldTime;
     this.id = setInterval(() => {
       const now = Date.now();
@@ -128,24 +208,55 @@ class Game {
   }
 
   update(dtTime) {
-    const sObj = this.world.objs.filter(obj => objs.isStatic);
-    this.world.objs.filter(obj => !objs.isStatic).forEach(obj => {
-      obj.update(this.world, sObj, dtTime);
+    this.world.objs.filter(obj => !obj.isStatic).forEach(obj => {
+      obj.update(this.world, dtTime);
     });
   }
 
   send() {
-
+    this.dws.send(JSON.stringify({
+      type: 'update',
+      data: this.world.objs
+    }))
   }
 }
 
-wss.on('connection', function connection(ws) {
-  
-  ws.on('message', function incoming(message) {
-    console.log('received: %s', message);
-  });
+const world = new World(600, 400);
+let game;
 
-  ws.send('something');
+let isFirstForSockets = true;
+wss.on('connection', function connection(ws) {
+  if (isFirstForSockets) {
+    isFirstForSockets = false; // uncoment in prod
+
+    game = new Game(world, ws);
+    game.start();
+
+    // comp
+    ws.on('message', function incoming(message) {
+      console.log('received: %s', message);
+    });
+
+    ws.send(JSON.stringify({
+      type: 'init',
+      data: {
+        width: world.w,
+        height: world.h,
+      }
+    }));
+  } else {
+    // pad
+    console.log('add pad');
+    const player = new Player(ws, 300, 300, 30, '#ff0000', 200);
+    world.add(player);
+    player.setDirection(-0.21, -0.5);
+
+    ws.on('message', function incoming(message) {
+      console.log('received: %s', message);
+    });
+
+    ws.send('something');
+  }
 });
 
 
