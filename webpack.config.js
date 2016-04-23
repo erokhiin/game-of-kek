@@ -28,16 +28,6 @@ module.exports = {
       chunks: ['pad'],
       filename: 'pad.html'
     }),
-    // new HtmlWebpackPlugin({
-    //   template: 'app/pad.tpl.html',
-    //   inject: 'body',
-    //   // chunks: {
-    //   //   body: {
-    //   //     entry: 'pad'
-    //   //   }
-    //   // },
-    //   filename: 'pad.html'
-    // }),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.NoErrorsPlugin(),
     new webpack.DefinePlugin({
