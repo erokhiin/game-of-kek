@@ -23,7 +23,28 @@ body {
   height: 70%;
   border-radius: 50%;
   background-color: #ddddf3;
-  cursor: pointer;
+  -webkit-tap-highlight-color: none;
+}
+
+.pad__nipple-wrap:after {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 50%;
+  width: 1px;
+  height: 100%;
+  background-color: #d3d3d3;
+  -webkit-tap-highlight-color: none;
+}
+
+.pad__nipple-wrap:before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 50%;
+  height: 1px;
+  width: 100%;
+  background-color: #d3d3d3;
   -webkit-tap-highlight-color: none;
 }
 
@@ -50,6 +71,5 @@ body {
   height: 30%;
   border-radius: 50%;
   background-color: #f37777;
-  cursor: pointer;
   -webkit-tap-highlight-color: none;
 }

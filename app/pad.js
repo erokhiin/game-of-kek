@@ -1,5 +1,7 @@
 import './pad.css';
 
+// const socket = new WebSocket('ws://localhost:3000');
+
 window.addEventListener('load', function() {
 
   // blocks
@@ -14,18 +16,7 @@ window.addEventListener('load', function() {
 
   // nipple
 
-  function posToCoords({x: x, y: y}) {
-
-  }
-
-  function coordsToPos({x: x, y: y}) {
-    return {
-      x: nippleR + (nippleR * x),
-      y: nippleR + (nippleR * y)
-    };
-  }
-
-  function posNipple({x: x, y: y}) {
+  function posNipple({ x: x, y: y }) {
     nipple.style.top = y + 'px';
     nipple.style.left = x + 'px';
   }
@@ -56,21 +47,28 @@ window.addEventListener('load', function() {
 
       switch(touch.identifier) {
         case nippleTouch:
-          const intersection = checkIntersection(nippleWrap, touch.pageX, touch.pageY, -(nipple.offsetWidth / 2));
-          if (intersection) {
-            posNipple(intersection);
-          } else {
+          let intersection = checkIntersection(nippleWrap, touch.pageX, touch.pageY, -(nipple.offsetWidth / 2));
+          if (!intersection) {
             const _r = nippleR - nipple.offsetWidth / 2;
             const x1 = nippleWrap.offsetLeft + _r;
             const y1 = nippleWrap.offsetTop + _r;
             const x2 = touch.pageX;
             const y2 = touch.pageY;
             const d = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-            posNipple({
+            intersection = {
               x: ((x2 - x1) / d * _r) + nippleR,
               y: ((y2 - y1) / d * _r) + nippleR
-            });
+            };
           }
+          posNipple(intersection);
+          const _r = nippleR - nipple.offsetWidth / 2;
+          // socket.send(JSON.stringify({
+          //   type: 'nipple',
+          //   data: {
+          //     x: (intersection.x - nippleR) / _r,
+          //     y: (intersection.y - nippleR) / _r
+          //   }
+          // }));
           break;
 
         case btnTouch:
@@ -101,7 +99,7 @@ window.addEventListener('load', function() {
     nippleR = nippleWrap.offsetWidth / 2;
     nipple.style.marginLeft = nipple.style.marginTop = (- nippleSide / 2) + 'px';
     if (!nippleTouch) {
-      posNipple(coordsToPos({x: 0, y: 0}));
+      posNipple({ x: nippleR, y: nippleR });
     }
   };
 
