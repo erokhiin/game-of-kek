@@ -33,8 +33,6 @@ function circle({x, y, r, c}) {
 function update(objs) {
   clear();
 
-  console.log(objs);
-
   objs.forEach(obj => {
     switch (obj.t) {
       case 'circle':

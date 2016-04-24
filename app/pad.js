@@ -1,6 +1,6 @@
 import './pad.css';
 
-const socket = new WebSocket('ws://localhost:3000/room');
+const socket = new WebSocket(`ws://${location.host}${location.pathname}`);
 
 window.addEventListener('load', function() {
 
@@ -61,13 +61,13 @@ window.addEventListener('load', function() {
             };
           }
           posNipple(intersection);
-          // socket.send(JSON.stringify({
-          //   type: 'nipple',
-          //   data: {
-          //     x: (intersection.x - nippleR) / _r,
-          //     y: (intersection.y - nippleR) / _r
-          //   }
-          // }));
+          socket.send(JSON.stringify({
+            type: 'nipple',
+            data: {
+              x: (intersection.x - nippleR) / _r,
+              y: (intersection.y - nippleR) / _r
+            }
+          }));
           break;
 
         case btnTouch:

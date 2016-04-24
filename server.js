@@ -162,14 +162,13 @@ class Player extends Circle {
         let x = this.x + dx;
         let y = this.y + dx;
         let r2 = this.r + obj.r;
-        const dist = Math.pow(x - obj.x, 2) + Math.pow(y - obj.y, 2)
-        if (dist < Math.pow(r2, 2)) {
+        const dist = Math.sqrt(Math.pow(x - obj.x, 2) + Math.pow(y - obj.y, 2));
+        if (dist < r2) {
+
+          const newY = obj.y + (y - obj.y) * (r2 + 1) / dist;
+          const newX = obj.x + (x - obj.x) * (r2 + 1) / dist;
           
-          const newDy = (y - obj.y) / dist * r2;
-          const newDx = (x - obj.x) / dist * r2;
-
-          return { dx: newDx, dy: newDy };
-
+          return { dx: newX - this.x, dy: newY - this.y  };
         } else {
           return { dx, dy };
         }
@@ -225,7 +224,7 @@ let game;
 let isFirstForSockets = true;
 wss.on('connection', function connection(ws) {
   if (isFirstForSockets) {
-    isFirstForSockets = false; // uncoment in prod
+    isFirstForSockets = false;
 
     game = new Game(world, ws);
     game.start();
@@ -245,10 +244,9 @@ wss.on('connection', function connection(ws) {
   } else {
     // pad
     console.log('add pad');
-    const player = new Player(ws, 300, 300, 30, '#ff0000', 200);
+    const player = new Player(ws, 300, 300, 50, '#ff0000', 200);
     world.add(player);
-    // player.setDirection(-0.21, -0.5);
-
+    
     ws.on('message', function incoming(message) {
       const msg = JSON.parse(message);
 
