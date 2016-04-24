@@ -151,6 +151,8 @@ class Player extends Circle {
     this.dx = 0;
     this.dy = 0;
 
+    this.dirX = 0;
+    this.dirY = 1;
 
     // hit vars
     this.as = ats;
@@ -165,6 +167,13 @@ class Player extends Circle {
   setDirection(dx, dy) {
     this.dx = dx;
     this.dy = dy;
+
+    if (dx > 0 && dy > 0) {
+      const n = this.normalize(this.dx, this.dy);
+
+      this.dirX = n.x;
+      this.dirY = n.y;
+    }
   }
 
   update(world, dtTime) {
@@ -194,14 +203,13 @@ class Player extends Circle {
   }
 
   toJSON() {
-    const n = this.normalize(this.dx, this.dy);
     const a = this.sendHit;
 
     this.sendHit = false;
 
     return Object.assign(super.toJSON(), {
-      dx: n.x,
-      dy: n.y,
+      dx: this.dirX,
+      dy: this.dirY,
       t: this.type,
       a: a,
     });
