@@ -384,7 +384,7 @@ function initHost(ws, data) {
   });
 
   if (!game) {
-    world = new World(data.w - 5, data.h - 5);
+    world = new World(data.w, data.h);
     game = new Game(world, ws);
     game.start();
   }

@@ -67,7 +67,7 @@ function player({ x, y, r, c, dx, dy, a = true }) {
     ctx.arc(0, 0, r * 1.4, alpha - dalpha, alpha + dalpha);
 
     const d = r * 1.4 * Math.cos(dalpha);
-    ctx.fillStyle = '#fff'
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.75)'
     ctx.arc(dx * d, dy * d, r * 1.4 * Math.sin(dalpha), alpha + Math.PI / 2, alpha - Math.PI / 2, true);
     ctx.fill();
 
