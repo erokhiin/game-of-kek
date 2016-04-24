@@ -2,6 +2,19 @@ import './pad.css';
 
 const socket = new WebSocket(`ws://${location.host}${location.pathname}`);
 
+socket.onmessage = function({data}) {
+  const msg = JSON.parse(data);
+  switch (msg.type) {
+    case 'init':
+      document.body.style.backgroundColor = msg.data.color;
+      break;
+  }
+};
+
+socket.onerror = function() {
+  document.body.style.backgroundColor = msg.data.color;
+};
+
 // blocks
 
 const boob = document.querySelector('.pad__boob');
