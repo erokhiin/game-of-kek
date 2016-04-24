@@ -157,7 +157,15 @@ class Player extends Circle {
     // hit vars
     this.as = ats;
     this.sendHit = false;
+    this.sendFor = 250;
+    this.timeLastSend = 0.0;
+
     this.timeLastHit = 0.0;
+
+    // dead vars
+    this.dead = false;
+    this.deadTime = 1500;
+    this.hp = 100;
   }
 
   hit(cs) {
@@ -176,10 +184,17 @@ class Player extends Circle {
     }
   }
 
-  isAttack(obj) {
-    const len = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-    const cos = dx / len;
-    const sin = dy / len;
+  rotate(x, y, angle) {
+    const x1 = x * Math.cos(angle) - y * Math.sin(angle); 
+    const y1 = y * Math.cos(angle) + x * Math.sin(angle);
+
+    return {x: x1, y: y1};
+  }
+
+  isAttack(objs) {
+    const len = Math.sqrt(Math.pow(this.dirX, 2) + Math.pow(this.dirY, 2));
+    const cos = this.dirX / len;
+    const sin = this.dirY / len;
 
     let alpha = Math.acos(cos);
     const dalpha = Math.PI / 4;
@@ -188,7 +203,29 @@ class Player extends Circle {
       alpha = -alpha;
     }
 
-    
+    const points = [
+      this.rotate(this.dirX, this.dirY, alpha),
+      this.rotate(this.dirX, this.dirY, alpha + dalpha),
+      this.rotate(this.dirX, this.dirY, alpha - dalpha),
+    ].map(dt => ({
+      x: this.x + dt.x * this.r * 1.4,
+      y: this.y + dt.y * this.r * 1.4,
+    }));
+
+    objs.forEach(obj => {
+      if (obj !== this) {
+        points.forEach(point => {
+          const dist = Math.sqrt(Math.pow(obj.x - point.x) + Math.pow(obj.y - point.y));
+          if (dist < obj.r) {
+            obj.kill();
+          }
+        });
+      }
+    });
+  }
+
+  kill() {
+    this.dead = true;
   }
 
   update(world, dtTime) {
@@ -199,11 +236,23 @@ class Player extends Circle {
 
     dt = world.objs.reduce((dt, obj) => this !== obj ? this.hitTest(obj, dt.dx, dt.dy) : dt, dt);
 
-    if (this.isHit && this.timeLastHit > this.as * 1000) {
-      this.timeLastHit = 0.0;
-      this.sendHit = true;
+    if (!this.dead) {
+      if (this.isHit && this.timeLastHit > this.as * 1000) {
+        this.timeLastHit = 0.0;
+        this.timeLastSend = 0.0;
+        this.isAttack(world.objs);
+
+        this.sendHit = true;
+      }
+
+      if (this.timeLastSend > this.sendFor) {
+        this.sendHit = false;
+      }
+    } else {
+      this.hp -= dtTime / this.deadTime;
     }
 
+    this.timeLastSend += dtTime;
     this.timeLastHit += dtTime;
 
     this.x += dt.dx;
@@ -218,20 +267,18 @@ class Player extends Circle {
   }
 
   toJSON() {
-    const a = this.sendHit;
-
-    this.sendHit = false;
-
     return Object.assign(super.toJSON(), {
       dx: this.dirX,
       dy: this.dirY,
       t: this.type,
-      a: a,
+      a: this.sendHit,
+      k: this.hp,
     });
   }
 
   hitTest(obj, dx, dy) {
     switch (obj.type) {
+      case 'player':
       case 'circle': {
         let x = this.x + dx;
         let y = this.y + dx;
@@ -300,6 +347,8 @@ class Game {
     this.world.objs.filter(obj => !obj.isStatic).forEach(obj => {
       obj.update(this.world, dtTime);
     });
+
+    this.world.objs = this.world.objs.filter(obj => obj.hp > 5);
   }
 
   send() {
