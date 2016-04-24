@@ -99,7 +99,7 @@ document.addEventListener('touchstart', function() {
   if (disabled) {
     location.reload();
   }
-};
+});
 
 boob.addEventListener('touchstart', function(e) {
   if (nippleTouch || disabled) return;
