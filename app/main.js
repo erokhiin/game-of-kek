@@ -32,29 +32,24 @@ function circle({ x, y, r, c, a }) {
 }
 
 function player({ x, y, r, c, dx, dy, a }) {
-  // let dir;
-  // const len = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-  // const cos = Math.round(dx / Math.abs(dx)) * dx / len;
-  // const sin = Math.round(dy / Math.abs(dy)) * dy / len;
+  let dir;
+  const len = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+  const cos = dx / len;
+  const sin = dy / len;
 
-  // console.log(dx);
-  // console.log(dy);
+  if (cos >= Math.SQRT1_2) {
+    dir = 'right';
+  } else if (cos <= - Math.SQRT1_2) {
+    dir = 'left';
+  }
 
-  // if (cos > Math.SQRT1_2) {
-  //   dir = 'right';
-  // } else if (cos < - Math.SQRT1_2) {
-  //   dir = 'left';
-  // }
+  if (sin >= Math.SQRT1_2) {
+    dir = 'down';
+  } else if (sin <= - Math.SQRT1_2) {
+    dir = 'up';
+  }
 
-  // if (sin > Math.SQRT1_2) {
-  //   dir = 'down';
-  // } else if (sin < - Math.SQRT1_2) {
-  //   dir = 'up';
-  // }
-
-  // console.log(dir);
-
-  knight(ctx, x, y, r, c, 'down');
+  knight(ctx, x, y, r, c, dir);
 }
 
 function update(objs) {
@@ -64,7 +59,6 @@ function update(objs) {
     switch (obj.t) {
       case 'player':
         player(obj);
-        circle(obj);
         break;
       case 'circle':
         circle(obj);

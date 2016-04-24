@@ -2,7 +2,7 @@
 const B = '#000';
 const G = '#666';
 const W = '#fff';
-let C = '#ddd';
+let C = 'brand';
 
 const frames = {
 
@@ -75,27 +75,17 @@ function drawPixel(a, x, y) {
 }
 
 export default function knight(ctx, x, y, r, c, dir) {
-  C = c;
+  const a = Math.ceil(r * 1.25 * Math.SQRT2 / 12);
+  const offset = a * 6;
 
   ctx.save();
-
-  const a = r * Math.sqrt(2) / 12;
-
-  // dir
-
-
-
+  ctx.translate(Math.ceil(x) - offset, Math.ceil(y) - offset);
   for (let i = 0; i < frames[dir].length; i ++) {
-
     for (let j = 0; j < frames[dir][i].length; j ++) {
-
-      ctx.fillStyle = frames[dir][i][j];
-      ctx.fillRect();
-
-    }    
-
+      if (frames[dir][i][j] === 0) continue;
+      ctx.fillStyle = frames[dir][i][j] === 'brand' ? c : frames[dir][i][j];
+      ctx.fillRect(j * a, i * a, a, a);
+    }
   }
-
-
   ctx.restore();
 }

@@ -311,7 +311,7 @@ function initPad(ws) {
     // pad
   console.log('add pad');
   const playerColor = getRandomColor();
-  const player = new Player(ws, 300, 300, 10, playerColor, 200, 1);
+  const player = new Player(ws, 300, 300, 25, playerColor, 400, 1);
   world.add(player);
   
   ws.on('message', function incoming(message) {
