@@ -31,7 +31,7 @@ function circle({ x, y, r, c, a }) {
   ctx.restore();
 }
 
-function player({ x, y, r, c, dx, dy, a }) {
+function player({ x, y, r, c, dx, dy, a = true }) {
   let dir;
   const len = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
   const cos = dx / len;
@@ -50,6 +50,33 @@ function player({ x, y, r, c, dx, dy, a }) {
   }
 
   knight(ctx, x, y, r, c, dir);
+
+  if (true) {
+    ctx.save();
+      
+    ctx.translate(Math.ceil(x), Math.ceil(y));
+
+    console.log(Math.acos(cos));
+    console.log(Math.asin(sin));
+
+    let alpha = Math.acos(cos);
+    const dalpha = Math.PI / 4;
+
+   if (sin < 0) {
+      alpha = -alpha;
+    }
+
+    ctx.beginPath();
+    ctx.arc(0, 0, r * 1.4, alpha - dalpha, alpha + dalpha);
+
+    const d = r * 1.4 * Math.cos(dalpha);
+    ctx.fillStyle = '#fff'
+    ctx.arc(dx * d, dy * d, r * 1.4 * Math.sin(dalpha), alpha + Math.PI / 2, alpha - Math.PI / 2, true);
+    ctx.fill();
+
+
+    ctx.restore();
+  }
 }
 
 function update(objs) {
