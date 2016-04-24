@@ -421,7 +421,7 @@ function initPad(ws) {
     // pad
   console.log('add pad');
   const playerColor = getRandomColor();
-  const player = new Player(ws, Math.round(Math.random() * world.w - playerSize), Math.round(Math.random() * world.h - playerSize), playerSize, playerColor, 400, 1, heroes[Math.round(Math.random() * (heroes.length - 1))]);
+  const player = new Player(ws, Math.round(Math.random() * world.w - playerSize), Math.round(Math.random() * world.h - playerSize), playerSize, playerColor, 425, 1, heroes[Math.round(Math.random() * (heroes.length - 1))]);
   world.add(player);
   
   ws.on('close', function() {
