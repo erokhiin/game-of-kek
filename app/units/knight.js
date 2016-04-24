@@ -1,6 +1,6 @@
 
 const B = '#333';
-const G = '#666';
+const G = '#999';
 const W = '#fff';
 let C = 'brand';
 
