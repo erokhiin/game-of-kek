@@ -20,8 +20,7 @@ function rect({x, y, w, h, c}) {
   ctx.restore();
 }
 
-function circle({x, y, r, c, a}) {
-  console.log(a);
+function circle({x, y, r, c}) {
   ctx.save();
   ctx.beginPath();
   ctx.fillStyle = c;

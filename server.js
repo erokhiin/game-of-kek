@@ -73,7 +73,7 @@ class World {
   }
 
   setIn(obj) {
-    if (obj.type == 'circle') {
+    if (obj.type == 'circle' || obj.type == 'player') {
       obj.x = Math.min(Math.max(0 + obj.r, obj.x), this.w - obj.r);
       obj.y = Math.min(Math.max(0 + obj.r, obj.y), this.h - obj.r);
     } else if (obj.type == 'rect') {
@@ -168,7 +168,7 @@ class Player extends Circle {
     this.dx = dx;
     this.dy = dy;
 
-    if (dx > 0 && dy > 0) {
+    if (Math.abs(dx) > 0.01 || Math.abs(dy) > 0.01) {
       const n = this.normalize(this.dx, this.dy);
 
       this.dirX = n.x;
