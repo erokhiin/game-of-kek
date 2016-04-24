@@ -206,8 +206,6 @@ class Player extends Circle {
       alpha = -alpha;
     }
 
-    console.log(alpha);
-
     const points = [
       this.rotate(this.dirX, this.dirY, alpha),
       this.rotate(this.dirX, this.dirY, alpha + dalpha),
@@ -217,12 +215,12 @@ class Player extends Circle {
       y: this.y + dt.y * this.r * 1.4,
     }));
 
+    this.points = points;
+
     objs.forEach(obj => {
       if (obj !== this) {
         points.forEach(point => {
-          console.log(point);
           const dist = Math.sqrt(Math.pow(obj.x - point.x, 2) + Math.pow(obj.y - point.y, 2));
-          console.log(dist);
           if (dist < obj.r) {
             obj.kill();
           }
@@ -256,7 +254,7 @@ class Player extends Circle {
         this.sendHit = false;
       }
     } else {
-      this.hp -= dtTime / this.deadTime;
+      this.hp -= dtTime / this.deadTime * 100;
     }
 
     this.timeLastSend += dtTime;
@@ -264,6 +262,8 @@ class Player extends Circle {
 
     this.x += dt.dx;
     this.y += dt.dy;
+
+    console.log(this.hp);
 
     world.setIn(this);
   }
@@ -281,6 +281,7 @@ class Player extends Circle {
       a: this.sendHit,
       k: this.hp,
       n: this.name,
+      p: this.points,
     });
   }
 
