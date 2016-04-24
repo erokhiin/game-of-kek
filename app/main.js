@@ -1,7 +1,8 @@
 import './App.css';
 
 const heroes = {
-  knight: require('./units/knight').default
+  knight: require('./units/knight').default,
+  thief: require('./units/thief').default
 };
 
 const canvas = document.querySelector('canvas');

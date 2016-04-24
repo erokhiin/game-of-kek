@@ -397,7 +397,7 @@ function initClient(auth, data, ws) {
   }
 }
 
-const heroes = [ 'knight' ];
+const heroes = [ 'knight', 'thief' ];
 
 function initPad(ws) {
     // pad
