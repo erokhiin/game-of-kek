@@ -11,7 +11,7 @@ const frames = {
     [ 0, C, C, C, C, C, C, C, C, C, 0, 0 ],
     [ 0, 0, 0, S, B, S, B, S, 0, W, W, W ],
     [ 0, 0, 0, S, S, S, S, S, 0, W, 0, W ],
-    [ 0, C, C, W, W, W, W, W, C, W, 0, W ],
+    [ 0, C, C, W, W, W, W, W, C, C, 0, W ],
     [ 0, C, 0, C, W, W, W, C, 0, W, 0, 0 ],
     [ 0, C, 0, C, W, W, W, C, 0, W, 0, 0 ],
     [ 0, C, 0, C, C, W, C, C, 0, W, 0, 0 ],

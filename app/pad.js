@@ -16,21 +16,8 @@ function disable() {
 }
 
 socket.onopen = function() {
-  // if (intervalId) {
-  //   clearInterval(intervalId);
-  //   intervalId = null;
-  // }
   socket.send(JSON.stringify({type: 'auth', auth: 'pad-hiuhdajdas23442'}))
 }
-
-// socket.onclose = function() {
-//   console.log('close');
-//   if (!intervalId) {
-//      intervalId = setInterval(function() {
-//       let socket = new WebSocket(`ws://${location.host}`);
-//     }, 10000);
-//   }
-// }
 
 socket.onmessage = function({data}) {
   const msg = JSON.parse(data);

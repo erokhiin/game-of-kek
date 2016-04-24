@@ -154,6 +154,7 @@ class Player extends Circle {
 
     this.dirX = 0;
     this.dirY = 1;
+    this.frags = 0;
 
     // hit vars
     this.as = ats;
@@ -195,28 +196,6 @@ class Player extends Circle {
   }
 
   isAttack(objs) {
-    // const len = Math.sqrt(Math.pow(this.dirX, 2) + Math.pow(this.dirY, 2));
-    // const cos = this.dirX / len;
-    // const sin = this.dirY / len;
-
-    // let alpha = Math.acos(cos);
-    // const dalpha = Math.PI / 4;
-
-    // if (sin < 0) {
-    //   alpha = -alpha;
-    // }
-
-    // console.log(alpha);
-
-    // const points = [
-    //   this.rotate(this.dirX, this.dirY, alpha),
-    //   this.rotate(this.dirX, this.dirY, alpha + dalpha),
-    //   this.rotate(this.dirX, this.dirY, alpha - dalpha),
-    // ].map(dt => ({
-    //   x: this.x + dt.x * this.r * 1.4,
-    //   y: this.y + dt.y * this.r * 1.4,
-    // }));
-
     const points = [{
       x: this.x + this.dirX * this.r * 1.45,
       y: this.y + this.dirY * this.r * 1.45,
@@ -230,6 +209,7 @@ class Player extends Circle {
           const dist = Math.sqrt(Math.pow(obj.x - point.x, 2) + Math.pow(obj.y - point.y, 2));
           if (dist < obj.r + 15) {
             obj.kill();
+            this.frags += 1;
           }
         });
       }
@@ -238,6 +218,7 @@ class Player extends Circle {
 
   kill() {
     this.dead = true;
+    this.frags = 0;
     this.ws.send(JSON.stringify({type: 'disable'}));
   }
 
@@ -288,6 +269,7 @@ class Player extends Circle {
       k: this.hp,
       n: this.name,
       p: this.points,
+      f: this.frags,
     });
   }
 
