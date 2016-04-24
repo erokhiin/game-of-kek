@@ -3,6 +3,18 @@ import './pad.css';
 // let intervalId;
 let socket = new WebSocket(`ws://${location.host}`);
 
+let disabled = true;
+
+function enable(color) {
+  disabled = false;
+  document.body.style.backgroundColor = color;
+}
+
+function disable() {
+  disabled = true;
+  document.body.style.backgroundColor = '#ccc';
+}
+
 socket.onopen = function() {
   // if (intervalId) {
   //   clearInterval(intervalId);
@@ -24,14 +36,14 @@ socket.onmessage = function({data}) {
   const msg = JSON.parse(data);
   switch (msg.type) {
     case 'init':
-      document.body.style.backgroundColor = msg.data.color;
+      enable(msg.data.color);
       break;
   }
 };
 
 socket.onerror = function() {
   console.log('error');
-  document.body.style.backgroundColor = msg.data.color;
+  disable();
 };
 
 // blocks
@@ -95,7 +107,7 @@ function upButton() {
 }
 
 boob.addEventListener('touchstart', function(e) {
-  if (nippleTouch) return;
+  if (nippleTouch || disabled) return;
   nipple.classList.add('i-active');
   nipple.classList.remove('i-back');
   nippleTouch = e.targetTouches[e.targetTouches.length - 1].identifier;
@@ -103,6 +115,7 @@ boob.addEventListener('touchstart', function(e) {
 }, false);
 
 btn.addEventListener('touchstart', function(e) {
+  if (disabled) return;
   btn.classList.add('i-active');
   btnTouch = e.targetTouches[e.targetTouches.length - 1].identifier;
   socket.send(JSON.stringify({

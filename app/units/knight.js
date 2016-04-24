@@ -1,4 +1,3 @@
-
 const B = '#333';
 const G = '#999';
 const W = '#fff';
@@ -66,26 +65,6 @@ const frames = {
     [ 0, 0, 0, C, 0, 0, 0, C, 0, 0, 0, 0 ],
   ],
 
-
 }
 
-function drawPixel(a, x, y) {
-  // _ctx.fillStyle = color
-  // _ctx.fillRect x, y, a, a
-}
-
-export default function knight(ctx, x, y, r, c, dir) {
-  const a = Math.ceil(r * 1.25 * Math.SQRT2 / 12);
-  const offset = a * 6;
-
-  ctx.save();
-  ctx.translate(Math.ceil(x) - offset, Math.ceil(y) - offset);
-  for (let i = 0; i < frames[dir].length; i ++) {
-    for (let j = 0; j < frames[dir][i].length; j ++) {
-      if (frames[dir][i][j] === 0) continue;
-      ctx.fillStyle = frames[dir][i][j] === 'brand' ? c : frames[dir][i][j];
-      ctx.fillRect(j * a, i * a, a, a);
-    }
-  }
-  ctx.restore();
-}
+export default frames;

@@ -1,5 +1,9 @@
 import './App.css';
-import knight from './units/knight';
+
+const heroes = {
+  knight: require('./units/knight').default,
+  thief: require('./units/thief').default
+};
 
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext("2d");
@@ -31,7 +35,7 @@ function circle({ x, y, r, c, a }) {
   ctx.restore();
 }
 
-function player({ x, y, r, c, dx, dy, a }) {
+function player({ x, y, r, c, dx, dy, a, k, n }) {
   let dir;
   const len = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
   const cos = dx / len;
@@ -49,7 +53,20 @@ function player({ x, y, r, c, dx, dy, a }) {
     dir = 'up';
   }
 
-  knight(ctx, x, y, r, c, dir);
+  const frame = heroes[n][dir];
+  const pixel = Math.ceil(r * 1.25 * Math.SQRT2 / 12);
+  const offset = pixel * 6;
+
+  ctx.save();
+  ctx.translate(Math.ceil(x) - offset, Math.ceil(y) - offset);
+  for (let i = 0; i < (frame.length * k / 100); i ++) {
+    for (let j = 0; j < frame[i].length; j ++) {
+      if (frame[i][j] === 0) continue;
+      ctx.fillStyle = frame[i][j] === 'brand' ? c : frame[i][j];
+      ctx.fillRect(j * pixel, i * pixel, pixel, pixel);
+    }
+  }
+  ctx.restore();
 
   if (a) {
     ctx.save();
@@ -70,7 +87,6 @@ function player({ x, y, r, c, dx, dy, a }) {
     ctx.fillStyle = 'rgba(255, 255, 255, 0.75)'
     ctx.arc(dx * d, dy * d, r * 1.4 * Math.sin(dalpha), alpha + Math.PI / 2, alpha - Math.PI / 2, true);
     ctx.fill();
-
 
     ctx.restore();
   }

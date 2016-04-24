@@ -141,12 +141,13 @@ class Circle extends Obj {
 }
 
 class Player extends Circle {
-  constructor(ws, x, y, r, c, speed, ats) { // speed in points per second, atack speed raz per second
+  constructor(ws, x, y, r, c, speed, ats, name) { // speed in points per second, atack speed raz per second
     super(x, y, r, c, false);
     this.ws = ws;
 
     this.speed = speed;
 
+    this.name = name;
     this.type = 'player';
     this.dx = 0;
     this.dy = 0;
@@ -279,6 +280,7 @@ class Player extends Circle {
       t: this.type,
       a: this.sendHit,
       k: this.hp,
+      n: this.name,
     });
   }
 
@@ -363,7 +365,11 @@ class Game {
       data: this.world.objs
     });
 
-    this.dws.forEach(ws => ws.send(world));
+    this.dws.forEach(ws => {
+      if (ws.readyState == 1) {
+        ws.send(world);
+      }
+    });
   }
 }
 
@@ -397,11 +403,14 @@ function initClient(auth, data, ws) {
   }
 }
 
+const heroes = [ 'knight', 'thief' ];
+const playerSize = 25;
+
 function initPad(ws) {
     // pad
   console.log('add pad');
   const playerColor = getRandomColor();
-  const player = new Player(ws, 300, 300, 25, playerColor, 400, 1);
+  const player = new Player(ws, Math.round(Math.random() * world.w - playerSize), Math.round(Math.random() * world.h - playerSize), playerSize, playerColor, 400, 1, heroes[Math.round(Math.random() * (heroes.length - 1))]);
   world.add(player);
   
   ws.on('close', function() {
