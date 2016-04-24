@@ -36,7 +36,7 @@ function circle({ x, y, r, c, a }) {
   ctx.restore();
 }
 
-function player({ x, y, r, c, dx, dy, a, k, n, p }) {
+function player({ x, y, r, c, dx, dy, a, k, n, p, f }) {
   let dir;
   const len = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
   const cos = dx / len;
@@ -56,7 +56,7 @@ function player({ x, y, r, c, dx, dy, a, k, n, p }) {
 
   const frame = heroes[n][dir];
   const pixel = Math.ceil(r * 1.25 * Math.SQRT2 / 12);
-  const offset = pixel * 6;
+  const offset = pixel * frame.length / 2;
 
   ctx.save();
   ctx.translate(Math.ceil(x) - offset, Math.ceil(y) - offset);
@@ -67,11 +67,19 @@ function player({ x, y, r, c, dx, dy, a, k, n, p }) {
       ctx.fillRect(j * pixel, i * pixel, pixel, pixel);
     }
   }
+
+  if (f > 0) {
+    ctx.font ='11px \'Press Start 2P\'';
+    ctx.fillStyle = '#fff';
+    const textSize = ctx.measureText(f);
+    ctx.fillText(f, offset - textSize.width / 2, -10);
+  }
+
   ctx.restore();
 
   if (a) {
     ctx.save();
-      
+
     ctx.translate(Math.ceil(x), Math.ceil(y));
 
     let alpha = Math.acos(cos);
