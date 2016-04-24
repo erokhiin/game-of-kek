@@ -410,7 +410,7 @@ function initClient(auth, data, ws) {
   }
 }
 
-const heroes = [ 'knight', 'thief' ];
+const heroes = [ 'knight', 'thief', 'wizard' ];
 const playerSize = 25;
 
 function initPad(ws) {
