@@ -244,7 +244,7 @@ wss.on('connection', function connection(ws) {
   } else {
     // pad
     console.log('add pad');
-    const player = new Player(ws, 300, 300, 50, '#ff0000', 200);
+    const player = new Player(ws, 300, 300, 10, '#ff0000', 200);
     world.add(player);
     
     ws.on('message', function incoming(message) {
