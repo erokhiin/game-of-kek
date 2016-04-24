@@ -10,6 +10,7 @@ body {
   -webkit-tap-highlight-color: none;
   -webkit-overflow-scrolling: none;
   user-select: none;
+  transition: background-color ease .35s;
 }
 
 .pad {
