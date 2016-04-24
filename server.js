@@ -265,7 +265,8 @@ function initClient(auth, ws) {
 function initPad(ws) {
     // pad
   console.log('add pad');
-  const player = new Player(ws, 300, 300, 10, getRandomColor(), 200);
+  const playerColor = getRandomColor();
+  const player = new Player(ws, 300, 300, 10, playerColor, 200);
   world.add(player);
   
   ws.on('message', function incoming(message) {
@@ -278,7 +279,12 @@ function initPad(ws) {
     }
   });
 
-  ws.send('something');
+  ws.send(JSON.stringify({
+    type: 'init',
+    data: {
+      color: playerColor,
+    }
+  }));
 }
 
 function initHost(ws) {
