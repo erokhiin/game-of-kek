@@ -232,7 +232,7 @@ class Player extends Circle {
       if (obj !== this) {
         points.forEach(point => {
           const dist = Math.sqrt(Math.pow(obj.x - point.x, 2) + Math.pow(obj.y - point.y, 2));
-          if (dist < obj.r + 10) {
+          if (dist < obj.r + 15) {
             obj.kill();
           }
         });
@@ -246,7 +246,7 @@ class Player extends Circle {
   }
 
   update(world, dtTime) {
-    let dt = { 
+    let dt = {
       dx: (this.dx * dtTime * this.speed / 1000),
       dy: (this.dy * dtTime * this.speed / 1000),
     };
@@ -307,7 +307,7 @@ class Player extends Circle {
 
           const newY = obj.y + (y - obj.y) * (r2 + 1) / dist;
           const newX = obj.x + (x - obj.x) * (r2 + 1) / dist;
-          
+
           return { dx: newX - this.x, dy: newY - this.y  };
         } else {
           return { dx, dy };
@@ -347,11 +347,11 @@ class Game {
         height: this.world.h,
       }
     }));
-  } 
+  }
 
   addHost(ws) {
     this.dws.push(ws);
-  } 
+  }
 
   removeHost(ws) {
     this.dws = this.dws.filter(s => ws !== s);
@@ -403,7 +403,7 @@ wss.on('connection', function(ws) {
 
 function initClient(auth, data, ws) {
   switch (auth) {
-    case 'pad-hiuhdajdas23442': 
+    case 'pad-hiuhdajdas23442':
       initPad(ws);
       break;
     case 'host-hiuhdajdas23442':
@@ -423,7 +423,7 @@ function initPad(ws) {
   const playerColor = getRandomColor();
   const player = new Player(ws, Math.round(Math.random() * world.w - playerSize), Math.round(Math.random() * world.h - playerSize), playerSize, playerColor, 425, 1, heroes[Math.round(Math.random() * (heroes.length - 1))]);
   world.add(player);
-  
+
   ws.on('close', function() {
     world.remove(player);
   });
@@ -432,7 +432,7 @@ function initPad(ws) {
     const msg = JSON.parse(message);
 
     switch (msg.type) {
-      case 'nipple': 
+      case 'nipple':
         player.setDirection(msg.data.x, msg.data.y);
         break;
       case 'btn':

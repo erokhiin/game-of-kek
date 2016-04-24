@@ -72,7 +72,7 @@ function checkIntersection(el, x, y, r, rm = 0) {
   if (Math.pow(_x - r + rm, 2) + Math.pow(_y - r + rm, 2) < Math.pow(r, 2)) {
     return { x: _x, y: _y };
   } else {
-    return false; 
+    return false;
   }
 }
 
@@ -109,7 +109,11 @@ function upButton() {
 }
 
 boob.addEventListener('touchstart', function(e) {
-  if (nippleTouch || disabled) return;
+  if (disabled) {
+    location.reload();
+    return;
+  }
+  if (nippleTouch) return;
   nipple.classList.add('i-active');
   nipple.classList.remove('i-back');
   nippleTouch = e.targetTouches[e.targetTouches.length - 1].identifier;
