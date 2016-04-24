@@ -95,12 +95,14 @@ function upButton() {
   }));
 }
 
-boob.addEventListener('touchstart', function(e) {
+document.addEventListener('touchstart', function() {
   if (disabled) {
     location.reload();
-    return;
   }
-  if (nippleTouch) return;
+};
+
+boob.addEventListener('touchstart', function(e) {
+  if (nippleTouch || disabled) return;
   nipple.classList.add('i-active');
   nipple.classList.remove('i-back');
   nippleTouch = e.targetTouches[e.targetTouches.length - 1].identifier;
