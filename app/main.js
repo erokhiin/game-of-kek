@@ -1,4 +1,5 @@
 import './App.css';
+import knight from './units/knight';
 
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext("2d");
@@ -12,7 +13,7 @@ function clear() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-function rect({x, y, w, h, c}) {
+function rect({ x, y, w, h, c }) {
   ctx.save();
   ctx.translate(-w/2, -h/2);
   ctx.fillStyle = c;
@@ -20,7 +21,7 @@ function rect({x, y, w, h, c}) {
   ctx.restore();
 }
 
-function circle({x, y, r, c}) {
+function circle({ x, y, r, c, a }) {
   ctx.save();
   ctx.beginPath();
   ctx.fillStyle = c;
@@ -30,12 +31,41 @@ function circle({x, y, r, c}) {
   ctx.restore();
 }
 
+function player({ x, y, r, c, dx, dy, a }) {
+  // let dir;
+  // const len = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+  // const cos = Math.round(dx / Math.abs(dx)) * dx / len;
+  // const sin = Math.round(dy / Math.abs(dy)) * dy / len;
+
+  // console.log(dx);
+  // console.log(dy);
+
+  // if (cos > Math.SQRT1_2) {
+  //   dir = 'right';
+  // } else if (cos < - Math.SQRT1_2) {
+  //   dir = 'left';
+  // }
+
+  // if (sin > Math.SQRT1_2) {
+  //   dir = 'down';
+  // } else if (sin < - Math.SQRT1_2) {
+  //   dir = 'up';
+  // }
+
+  // console.log(dir);
+
+  knight(ctx, x, y, r, c, 'down');
+}
+
 function update(objs) {
   clear();
 
   objs.forEach(obj => {
     switch (obj.t) {
       case 'player':
+        player(obj);
+        circle(obj);
+        break;
       case 'circle':
         circle(obj);
         break;
@@ -49,7 +79,7 @@ function update(objs) {
 function main() {
   const ws = new WebSocket('ws://localhost:3000');
 
-  ws.onmessage = function({data}) {
+  ws.onmessage = function({ data }) {
     const msg = JSON.parse(data);
 
     switch (msg.type) {

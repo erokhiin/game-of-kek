@@ -1,8 +1,12 @@
+body {
+	background-color: #9e9;
+}
+
 * {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 canvas {
-    border: 1px solid red;  
+  border: 1px solid red;  
 }
