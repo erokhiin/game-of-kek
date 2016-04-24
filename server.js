@@ -180,6 +180,15 @@ class Player extends Circle {
     const len = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
     const cos = dx / len;
     const sin = dy / len;
+
+    let alpha = Math.acos(cos);
+    const dalpha = Math.PI / 4;
+
+    if (sin < 0) {
+      alpha = -alpha;
+    }
+
+    
   }
 
   update(world, dtTime) {

@@ -56,13 +56,10 @@ function player({ x, y, r, c, dx, dy, a = true }) {
       
     ctx.translate(Math.ceil(x), Math.ceil(y));
 
-    console.log(Math.acos(cos));
-    console.log(Math.asin(sin));
-
     let alpha = Math.acos(cos);
     const dalpha = Math.PI / 4;
 
-   if (sin < 0) {
+    if (sin < 0) {
       alpha = -alpha;
     }
 
