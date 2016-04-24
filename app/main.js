@@ -34,7 +34,7 @@ function circle({ x, y, r, c, a }) {
   ctx.restore();
 }
 
-function player({ x, y, r, c, dx, dy, a, k, n = 'knight' }) {
+function player({ x, y, r, c, dx, dy, a, k, n }) {
   let dir;
   const len = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
   const cos = dx / len;
