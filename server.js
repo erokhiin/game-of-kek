@@ -59,7 +59,7 @@ function getRandomColor() {
     return color;
 }
 
-const FPS = 1000/50;
+const FPS = 1000/60;
 
 class World {
   constructor(w, h) { // in points (px)
@@ -141,14 +141,25 @@ class Circle extends Obj {
 }
 
 class Player extends Circle {
-  constructor(ws, x, y, r, c, speed) { // speed in points per second
+  constructor(ws, x, y, r, c, speed, ats) { // speed in points per second, atack speed raz per second
     super(x, y, r, c, false);
     this.ws = ws;
 
     this.speed = speed;
 
+    this.type = 'player';
     this.dx = 0;
     this.dy = 0;
+
+
+    // hit vars
+    this.as = ats;
+    this.sendHit = false;
+    this.timeLastHit = 0.0;
+  }
+
+  hit(cs) {
+    this.isHit = cs == 'down';
   }
 
   setDirection(dx, dy) {
@@ -162,12 +173,38 @@ class Player extends Circle {
       dy: (this.dy * dtTime * this.speed / 1000),
     };
 
-    dt = world.objs.reduce((dt, obj) => this !== obj ? this.hitTest(obj, dt.dx, dt.dy) : dt, dt); 
+    dt = world.objs.reduce((dt, obj) => this !== obj ? this.hitTest(obj, dt.dx, dt.dy) : dt, dt);
+
+    if (this.isHit && this.timeLastHit > this.as * 1000) {
+      this.timeLastHit = 0.0;
+      this.sendHit = true;
+    }
+
+    this.timeLastHit += dtTime;
 
     this.x += dt.dx;
     this.y += dt.dy;
 
     world.setIn(this);
+  }
+
+  normalize(x, y) {
+    const d = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+    return { x: x / d, y : y / d };
+  }
+
+  toJSON() {
+    const n = this.normalize(this.dx, this.dy);
+    const a = this.sendHit;
+
+    this.sendHit = false;
+
+    return Object.assign(super.toJSON(), {
+      dx: n.x,
+      dy: n.y,
+      t: this.type,
+      a: a,
+    });
   }
 
   hitTest(obj, dx, dy) {
@@ -266,7 +303,7 @@ function initPad(ws) {
     // pad
   console.log('add pad');
   const playerColor = getRandomColor();
-  const player = new Player(ws, 300, 300, 10, playerColor, 200);
+  const player = new Player(ws, 300, 300, 10, playerColor, 200, 1);
   world.add(player);
   
   ws.on('message', function incoming(message) {
@@ -275,6 +312,9 @@ function initPad(ws) {
     switch (msg.type) {
       case 'nipple': 
         player.setDirection(msg.data.x, msg.data.y);
+        break;
+      case 'btn':
+        player.hit(msg.data);
         break;
     }
   });

@@ -1,17 +1,18 @@
 import './pad.css';
 
-let intervalId;
+// let intervalId;
 let socket = new WebSocket(`ws://${location.host}`);
 
 socket.onopen = function() {
-  if (intervalId) {
-    clearInterval(intervalId);
-    intervalId = null;
-  }
+  // if (intervalId) {
+  //   clearInterval(intervalId);
+  //   intervalId = null;
+  // }
   socket.send(JSON.stringify({type: 'auth', data: 'pad-hiuhdajdas23442'}))
 }
 
 // socket.onclose = function() {
+//   console.log('close');
 //   if (!intervalId) {
 //      intervalId = setInterval(function() {
 //       let socket = new WebSocket(`ws://${location.host}`);
@@ -29,6 +30,7 @@ socket.onmessage = function({data}) {
 };
 
 socket.onerror = function() {
+  console.log('error');
   document.body.style.backgroundColor = msg.data.color;
 };
 

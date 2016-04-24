@@ -20,7 +20,8 @@ function rect({x, y, w, h, c}) {
   ctx.restore();
 }
 
-function circle({x, y, r, c}) {
+function circle({x, y, r, c, a}) {
+  console.log(a);
   ctx.save();
   ctx.beginPath();
   ctx.fillStyle = c;
@@ -35,6 +36,7 @@ function update(objs) {
 
   objs.forEach(obj => {
     switch (obj.t) {
+      case 'player':
       case 'circle':
         circle(obj);
         break;
@@ -52,7 +54,7 @@ function main() {
     const msg = JSON.parse(data);
 
     switch (msg.type) {
-      case 'init': 
+      case 'init':
         init(msg.data);
         break;
       case 'update':
