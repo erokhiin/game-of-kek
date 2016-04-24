@@ -8,12 +8,8 @@ body {
   padding: 0;
   background-color: #f9f9f9;
   -webkit-tap-highlight-color: none;
-}
-
-body {
-  position: fixed;
-  height: 100%;
-  width: 100%;
+  -webkit-overflow-scrolling: none;
+  user-select: none;
 }
 
 .pad {
@@ -21,6 +17,7 @@ body {
   height: 100%;
   background-color: #f9f9f9;
   -webkit-tap-highlight-color: none;
+  user-select: none;
 }
 
 .pad__boob {
@@ -30,28 +27,7 @@ body {
   border-radius: 50%;
   background-color: #ddddf3;
   -webkit-tap-highlight-color: none;
-}
-
-.pad__boob:after {
-  content: '';
-  display: block;
-  position: absolute;
-  left: 50%;
-  width: 1px;
-  height: 100%;
-  background-color: #d3d3d3;
-  -webkit-tap-highlight-color: none;
-}
-
-.pad__boob:before {
-  content: '';
-  display: block;
-  position: absolute;
-  top: 50%;
-  height: 1px;
-  width: 100%;
-  background-color: #d3d3d3;
-  -webkit-tap-highlight-color: none;
+  user-select: none;
 }
 
 .pad__nipple {
@@ -62,6 +38,7 @@ body {
   opacity: 0.5;
   z-index: 1;
   -webkit-tap-highlight-color: none;
+  user-select: none;
 }
 
 .pad__btn:after,
@@ -74,7 +51,7 @@ body {
   bottom: -5px;
   left: -5px;
   border: 5px solid #3333f3;
-  opacity: 0.25;
+  opacity: 0;
   transition: opacity ease .1s;
   box-sizing: border-box;
 }
@@ -83,8 +60,8 @@ body {
   transition: top ease .075s, left ease .075s;
 }
 
-.pad__nipple.i-back:before {
-  opacity: 0;
+.pad__nipple.i-active:before {
+  opacity: 0.3;
 }
 
 .pad__nipple:after {
@@ -101,11 +78,11 @@ body {
   border-radius: 50%;
   background-color: #f37777;
   -webkit-tap-highlight-color: none;
+  user-select: none;
 }
 
 .pad__btn:after {
   border: 5px solid #f37777;
-  opacity: 0;
 }
 
 .pad__btn.i-active:after {

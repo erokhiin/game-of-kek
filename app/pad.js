@@ -1,6 +1,6 @@
 import './pad.css';
 
-const socket = new WebSocket('ws://localhost:3000/room');
+// const socket = new WebSocket('ws://localhost:3000/room');
 
 window.addEventListener('load', function() {
 
@@ -23,9 +23,8 @@ window.addEventListener('load', function() {
   }
 
   function checkIntersection(el, x, y, r, rm = 0) {
-    const _x = x - el.offsetTop;
-    const _y = y - el.offsetLeft;
-
+    const _x = x - el.offsetLeft;
+    const _y = y - el.offsetTop;
     if (Math.pow(_x - r + rm, 2) + Math.pow(_y - r + rm, 2) < Math.pow(r, 2)) {
       return { x: _x, y: _y };
     } else {
@@ -66,6 +65,8 @@ window.addEventListener('load', function() {
   }
 
   boob.addEventListener('touchstart', function(e) {
+    if (nippleTouch) return;
+    nipple.classList.add('i-active');
     nipple.classList.remove('i-back');
     nippleTouch = e.targetTouches[e.targetTouches.length - 1].identifier;
     handleNippleTouch(e.targetTouches[e.targetTouches.length - 1]);
@@ -81,6 +82,7 @@ window.addEventListener('load', function() {
   }, false);
 
   window.addEventListener('touchmove', function(e) {
+    e.preventDefault();
     for (let i = 0; i < e.changedTouches.length; i++) {
       const touch = e.changedTouches[i];
       switch(touch.identifier) {
@@ -102,6 +104,7 @@ window.addEventListener('load', function() {
         case nippleTouch:
           nippleTouch = false;
           nipple.classList.add('i-back');
+          nipple.classList.remove('i-active');
           posNipple({ x: boobR, y: boobR });
           break;
         case btnTouch:
