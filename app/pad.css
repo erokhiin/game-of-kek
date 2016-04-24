@@ -8,6 +8,8 @@ body {
   padding: 0;
   background-color: #f9f9f9;
   -webkit-tap-highlight-color: none;
+  -webkit-overflow-scrolling: none;
+  user-select: none;
 }
 
 .pad {
@@ -15,47 +17,51 @@ body {
   height: 100%;
   background-color: #f9f9f9;
   -webkit-tap-highlight-color: none;
+  user-select: none;
 }
 
-.pad__nipple-wrap {
+.pad__boob {
   position: absolute;
   top: 15%;
   height: 70%;
   border-radius: 50%;
   background-color: #ddddf3;
   -webkit-tap-highlight-color: none;
-}
-
-.pad__nipple-wrap:after {
-  content: '';
-  display: block;
-  position: absolute;
-  left: 50%;
-  width: 1px;
-  height: 100%;
-  background-color: #d3d3d3;
-  -webkit-tap-highlight-color: none;
-}
-
-.pad__nipple-wrap:before {
-  content: '';
-  display: block;
-  position: absolute;
-  top: 50%;
-  height: 1px;
-  width: 100%;
-  background-color: #d3d3d3;
-  -webkit-tap-highlight-color: none;
+  user-select: none;
 }
 
 .pad__nipple {
   position: absolute;
-  width: 25%;
+  width: 30%;
   background-color: #3333f3;
   border-radius: 50%;
   opacity: 0.5;
   z-index: 1;
   -webkit-tap-highlight-color: none;
+  user-select: none;
+}
+
+.pad__btn:after,
+.pad__nipple:before {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  top: -5px;
+  right: -5px;
+  bottom: -5px;
+  left: -5px;
+  border: 5px solid #3333f3;
+  opacity: 0;
+  transition: opacity ease .1s;
+  box-sizing: border-box;
+}
+
+.pad__nipple.i-back {
+  transition: top ease .075s, left ease .075s;
+}
+
+.pad__nipple.i-active:before {
+  opacity: 0.3;
 }
 
 .pad__nipple:after {
@@ -72,4 +78,13 @@ body {
   border-radius: 50%;
   background-color: #f37777;
   -webkit-tap-highlight-color: none;
+  user-select: none;
+}
+
+.pad__btn:after {
+  border: 5px solid #f37777;
+}
+
+.pad__btn.i-active:after {
+  opacity: 0.3;
 }
