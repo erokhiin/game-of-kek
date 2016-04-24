@@ -185,10 +185,12 @@ class Player extends Circle {
   }
 
   rotate(x, y, angle) {
-    const x1 = x * Math.cos(angle) - y * Math.sin(angle); 
-    const y1 = y * Math.cos(angle) + x * Math.sin(angle);
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    const nx = (cos * x) + (sin * y);
+    const ny = (cos * y) - (sin * x);
 
-    return {x: x1, y: y1};
+    return {x: nx, y: ny};
   }
 
   isAttack(objs) {
@@ -203,6 +205,8 @@ class Player extends Circle {
       alpha = -alpha;
     }
 
+    console.log(alpha);
+
     const points = [
       this.rotate(this.dirX, this.dirY, alpha),
       this.rotate(this.dirX, this.dirY, alpha + dalpha),
@@ -215,7 +219,9 @@ class Player extends Circle {
     objs.forEach(obj => {
       if (obj !== this) {
         points.forEach(point => {
-          const dist = Math.sqrt(Math.pow(obj.x - point.x) + Math.pow(obj.y - point.y));
+          console.log(point);
+          const dist = Math.sqrt(Math.pow(obj.x - point.x, 2) + Math.pow(obj.y - point.y, 2));
+          console.log(dist);
           if (dist < obj.r) {
             obj.kill();
           }

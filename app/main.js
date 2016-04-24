@@ -82,7 +82,6 @@ function update(objs) {
   objs.forEach(obj => {
     switch (obj.t) {
       case 'player':
-        console.log(obj);
         player(obj);
         break;
       case 'circle':
