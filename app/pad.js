@@ -8,7 +8,7 @@ socket.onopen = function() {
   //   clearInterval(intervalId);
   //   intervalId = null;
   // }
-  socket.send(JSON.stringify({type: 'auth', data: 'pad-hiuhdajdas23442'}))
+  socket.send(JSON.stringify({type: 'auth', auth: 'pad-hiuhdajdas23442'}))
 }
 
 // socket.onclose = function() {

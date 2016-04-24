@@ -89,7 +89,13 @@ function main() {
   }
 
   ws.onopen = function() {
-    ws.send(JSON.stringify({type: 'auth', data: 'host-hiuhdajdas23442'}))
+    ws.send(JSON.stringify({
+      type: 'auth',
+      auth: 'host-hiuhdajdas23442',
+      data: {
+        h: window.innerHeight,
+        w: window.innerWidth,
+      }}))
   }
 }
 

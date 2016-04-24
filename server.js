@@ -4,6 +4,7 @@
 const path = require('path');
 const express = require('express');
 const webpack = require('webpack');
+const Color = require('color');
 const webpackMiddleware = require('webpack-dev-middleware');
 const config = require('./webpack.config.js');
 const ws = require('ws');
@@ -50,13 +51,8 @@ if (isDeveloping) {
   });
 }
 
-var letters = '0123456789ABCDEF'.split('');
 function getRandomColor() {
-    var color = '#';
-    for (var i = 0; i < 6; i++ ) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
+  return new Color({ h: Math.floor(Math.random() * 360), s: 100, l: 60 }).rgbString();
 }
 
 const FPS = 1000/60;
@@ -180,6 +176,12 @@ class Player extends Circle {
     }
   }
 
+  isAttack(obj) {
+    const len = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+    const cos = dx / len;
+    const sin = dy / len;
+  }
+
   update(world, dtTime) {
     let dt = { 
       dx: (this.dx * dtTime * this.speed / 1000),
@@ -301,7 +303,7 @@ class Game {
   }
 }
 
-const world = new World(600, 400);
+let world;
 let game;
 
 wss.on('connection', function(ws) {
@@ -310,7 +312,7 @@ wss.on('connection', function(ws) {
 
       switch (msg.type) {
         case 'auth':
-          initClient(msg.data, ws);
+          initClient(msg.auth, msg.data, ws);
           break;
         default:
           ws.close();
@@ -318,13 +320,13 @@ wss.on('connection', function(ws) {
   });
 });
 
-function initClient(auth, ws) {
+function initClient(auth, data, ws) {
   switch (auth) {
     case 'pad-hiuhdajdas23442': 
       initPad(ws);
       break;
     case 'host-hiuhdajdas23442':
-      initHost(ws);
+      initHost(ws, data);
       break;
     default:
       ws.close();
@@ -363,7 +365,7 @@ function initPad(ws) {
   }));
 }
 
-function initHost(ws) {
+function initHost(ws, data) {
   ws.on('message', function incoming(message) {
     console.log('received: %s', message);
   });
@@ -373,6 +375,7 @@ function initHost(ws) {
   });
 
   if (!game) {
+    world = new World(data.w - 5, data.h - 5);
     game = new Game(world, ws);
     game.start();
   }
