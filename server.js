@@ -44,6 +44,10 @@ if (isDeveloping) {
     res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/pad.html')));
     res.end();
   });
+
+  app.get('/screen', function(req, res) {
+    res.sendFile(path.join(__dirname, 'app/screen.jpg'));
+  });
 } else {
   // app.use(express.static(__dirname + '/dist'));
   app.get('/room', function response(req, res) {
