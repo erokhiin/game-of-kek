@@ -165,7 +165,7 @@ class Player extends Circle {
 
     // dead vars
     this.dead = false;
-    this.deadTime = 1500;
+    this.deadTime = 1000;
     this.hp = 100;
   }
 
@@ -195,25 +195,32 @@ class Player extends Circle {
   }
 
   isAttack(objs) {
-    const len = Math.sqrt(Math.pow(this.dirX, 2) + Math.pow(this.dirY, 2));
-    const cos = this.dirX / len;
-    const sin = this.dirY / len;
+    // const len = Math.sqrt(Math.pow(this.dirX, 2) + Math.pow(this.dirY, 2));
+    // const cos = this.dirX / len;
+    // const sin = this.dirY / len;
 
-    let alpha = Math.acos(cos);
-    const dalpha = Math.PI / 4;
+    // let alpha = Math.acos(cos);
+    // const dalpha = Math.PI / 4;
 
-    if (sin < 0) {
-      alpha = -alpha;
-    }
+    // if (sin < 0) {
+    //   alpha = -alpha;
+    // }
 
-    const points = [
-      this.rotate(this.dirX, this.dirY, alpha),
-      this.rotate(this.dirX, this.dirY, alpha + dalpha),
-      this.rotate(this.dirX, this.dirY, alpha - dalpha),
-    ].map(dt => ({
-      x: this.x + dt.x * this.r * 1.4,
-      y: this.y + dt.y * this.r * 1.4,
-    }));
+    // console.log(alpha);
+
+    // const points = [
+    //   this.rotate(this.dirX, this.dirY, alpha),
+    //   this.rotate(this.dirX, this.dirY, alpha + dalpha),
+    //   this.rotate(this.dirX, this.dirY, alpha - dalpha),
+    // ].map(dt => ({
+    //   x: this.x + dt.x * this.r * 1.4,
+    //   y: this.y + dt.y * this.r * 1.4,
+    // }));
+
+    const points = [{
+      x: this.x + this.dirX * this.r * 1.45,
+      y: this.y + this.dirY * this.r * 1.45,
+    }];
 
     this.points = points;
 
@@ -221,7 +228,7 @@ class Player extends Circle {
       if (obj !== this) {
         points.forEach(point => {
           const dist = Math.sqrt(Math.pow(obj.x - point.x, 2) + Math.pow(obj.y - point.y, 2));
-          if (dist < obj.r) {
+          if (dist < obj.r + 10) {
             obj.kill();
           }
         });
@@ -231,6 +238,7 @@ class Player extends Circle {
 
   kill() {
     this.dead = true;
+    this.ws.send(JSON.stringify({type: 'disable'}));
   }
 
   update(world, dtTime) {
@@ -262,8 +270,6 @@ class Player extends Circle {
 
     this.x += dt.dx;
     this.y += dt.dy;
-
-    console.log(this.hp);
 
     world.setIn(this);
   }

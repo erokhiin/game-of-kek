@@ -38,6 +38,8 @@ socket.onmessage = function({data}) {
     case 'init':
       enable(msg.data.color);
       break;
+    case 'disable':
+      disable();
   }
 };
 

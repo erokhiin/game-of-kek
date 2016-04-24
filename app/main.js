@@ -35,7 +35,7 @@ function circle({ x, y, r, c, a }) {
   ctx.restore();
 }
 
-function player({ x, y, r, c, dx, dy, a, k, n }) {
+function player({ x, y, r, c, dx, dy, a, k, n, p }) {
   let dir;
   const len = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
   const cos = dx / len;
@@ -111,7 +111,7 @@ function update(objs) {
 }
 
 function main() {
-  const ws = new WebSocket('ws://localhost:3000');
+  const ws = new WebSocket(`ws://${location.host}`);
 
   ws.onmessage = function({ data }) {
     const msg = JSON.parse(data);
