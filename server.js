@@ -34,8 +34,13 @@ if (isDeveloping) {
   app.use(middleware);
   app.get('/room', function response(req, res) {
     console.log('i work');
-    res.write(middleware.fileSystem.readFileSync(path.join(__dirname, isFirst ? 'dist/index.html' : 'dist/pad.html')));
-    isFirst = false;
+    res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
+    res.end();
+  });
+
+  app.get('/pad', function response(req, res) {
+    console.log('i work');
+    res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/pad.html')));
     res.end();
   });
 } else {
@@ -43,6 +48,15 @@ if (isDeveloping) {
   app.get('*', function response(req, res) {
     res.sendFile(path.join(__dirname, 'dist/index.html'));
   });
+}
+
+var letters = '0123456789ABCDEF'.split('');
+function getRandomColor() {
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
 }
 
 const FPS = 1000/50;
@@ -221,11 +235,54 @@ class Game {
 const world = new World(600, 400);
 let game;
 
-let isFirstForSockets = true;
-wss.on('connection', function connection(ws) {
-  if (isFirstForSockets) {
-    isFirstForSockets = false;
+wss.on('connection', function(ws) {
+  ws.once('message', function(message) {
+    const msg = JSON.parse(message);
 
+      switch (msg.type) {
+        case 'auth':
+          initClient(msg.data, ws);
+          break;
+        default:
+          ws.close();
+      }
+  });
+});
+
+function initClient(auth, ws) {
+  switch (auth) {
+    case 'pad-hiuhdajdas23442': 
+      initPad(ws);
+      break;
+    case 'host-hiuhdajdas23442':
+      initHost(ws);
+      break;
+    default:
+      ws.close();
+  }
+}
+
+function initPad(ws) {
+    // pad
+  console.log('add pad');
+  const player = new Player(ws, 300, 300, 10, getRandomColor(), 200);
+  world.add(player);
+  
+  ws.on('message', function incoming(message) {
+    const msg = JSON.parse(message);
+
+    switch (msg.type) {
+      case 'nipple': 
+        player.setDirection(msg.data.x, msg.data.y);
+        break;
+    }
+  });
+
+  ws.send('something');
+}
+
+function initHost(ws) {
+  if (!game) {
     game = new Game(world, ws);
     game.start();
 
@@ -241,26 +298,8 @@ wss.on('connection', function connection(ws) {
         height: world.h,
       }
     }));
-  } else {
-    // pad
-    console.log('add pad');
-    const player = new Player(ws, 300, 300, 10, '#ff0000', 200);
-    world.add(player);
-    
-    ws.on('message', function incoming(message) {
-      const msg = JSON.parse(message);
-
-      switch (msg.type) {
-        case 'nipple': 
-          player.setDirection(msg.data.x, msg.data.y);
-          break;
-      }
-    });
-
-    ws.send('something');
   }
-});
-
+}
 
 server.on('request', app);
 server.listen(port, function () { console.log('Listening on ' + server.address().port) });

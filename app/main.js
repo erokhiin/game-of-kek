@@ -61,8 +61,10 @@ function main() {
       default:
         throw Error(`Unknown event type: ${msg.type}`);
     }
+  }
 
-    // ws.send(JSON.stringify({hello: 'world'}));
+  ws.onopen = function() {
+    ws.send(JSON.stringify({type: 'auth', data: 'host-hiuhdajdas23442'}))
   }
 }
 

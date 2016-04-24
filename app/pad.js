@@ -1,6 +1,23 @@
 import './pad.css';
 
-const socket = new WebSocket(`ws://${location.host}${location.pathname}`);
+let intervalId;
+let socket = new WebSocket(`ws://${location.host}`);
+
+socket.onopen = function() {
+  if (intervalId) {
+    clearInterval(intervalId);
+    intervalId = null;
+  }
+  socket.send(JSON.stringify({type: 'auth', data: 'pad-hiuhdajdas23442'}))
+}
+
+// socket.onclose = function() {
+//   if (!intervalId) {
+//      intervalId = setInterval(function() {
+//       let socket = new WebSocket(`ws://${location.host}`);
+//     }, 10000);
+//   }
+// }
 
 // blocks
 
