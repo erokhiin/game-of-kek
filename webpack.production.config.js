@@ -7,9 +7,10 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var StatsPlugin = require('stats-webpack-plugin');
 
 module.exports = {
-  entry: [
-    path.join(__dirname, 'app/main.js')
-  ],
+  entry: {
+    main: path.join(__dirname, 'app/main.js'),
+    pad: path.join(__dirname, 'app/pad.js'),
+  },
   output: {
     path: path.join(__dirname, '/dist/'),
     filename: '[name]-[hash].min.js',
@@ -20,7 +21,14 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: 'app/index.tpl.html',
       inject: 'body',
+      chunks: ['main'],
       filename: 'index.html'
+    }),
+    new HtmlWebpackPlugin({
+      template: 'app/pad.tpl.html',
+      inject: 'body',
+      chunks: ['pad'],
+      filename: 'pad.html'
     }),
     new ExtractTextPlugin('[name]-[hash].min.css'),
     new webpack.optimize.UglifyJsPlugin({
@@ -43,14 +51,14 @@ module.exports = {
       exclude: /node_modules/,
       loader: 'babel',
       query: {
-        "presets": ["es2015", "stage-0", "react"]
+        "presets": ["es2015", "stage-0"]
       }
     }, {
       test: /\.json?$/,
       loader: 'json'
     }, {
       test: /\.css$/,
-      loader: ExtractTextPlugin.extract('style', 'css?modules&localIdentName=[name]---[local]---[hash:base64:5]!postcss')
+      loader: ExtractTextPlugin.extract('style', 'css!postcss')
     }]
   },
   postcss: [

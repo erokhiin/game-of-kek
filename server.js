@@ -45,9 +45,13 @@ if (isDeveloping) {
     res.end();
   });
 } else {
-  app.use(express.static(__dirname + '/dist'));
-  app.get('*', function response(req, res) {
+  // app.use(express.static(__dirname + '/dist'));
+  app.get('/room', function response(req, res) {
     res.sendFile(path.join(__dirname, 'dist/index.html'));
+  });
+
+  app.get('*', function response(req, res) {
+    res.sendFile(path.join(__dirname, 'dist/pad.html'));
   });
 }
 
@@ -411,7 +415,7 @@ function initClient(auth, data, ws) {
 }
 
 const heroes = [ 'knight', 'thief', 'wizard' ];
-const playerSize = 25;
+const playerSize = 20;
 
 function initPad(ws) {
     // pad
