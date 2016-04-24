@@ -106,6 +106,10 @@ window.addEventListener('load', function() {
           nipple.classList.add('i-back');
           nipple.classList.remove('i-active');
           posNipple({ x: boobR, y: boobR });
+          // socket.send(JSON.stringify({
+          //   type: 'nipple',
+          //   data: { x: 0, y: 0 }
+          // }));
           break;
         case btnTouch:
           upButton();
