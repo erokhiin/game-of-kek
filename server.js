@@ -72,6 +72,10 @@ class World {
     this.objs.push(obj);
   }
 
+  remove(obj) {
+    this.objs = this.objs.filter(o => o !== obj);
+  }
+
   setIn(obj) {
     if (obj.type == 'circle' || obj.type == 'player') {
       obj.x = Math.min(Math.max(0 + obj.r, obj.x), this.w - obj.r);
@@ -242,7 +246,7 @@ class Player extends Circle {
 
 class Game {
   constructor(world, dws) {
-    this.dws = dws;
+    this.dws = [dws];
     this.world = world;
   }
 
@@ -258,6 +262,24 @@ class Game {
     }, FPS);
   }
 
+  initHost(ws) {
+    ws.send(JSON.stringify({
+      type: 'init',
+      data: {
+        width: this.world.w,
+        height: this.world.h,
+      }
+    }));
+  } 
+
+  addHost(ws) {
+    this.dws.push(ws);
+  } 
+
+  removeHost(ws) {
+    this.dws = this.dws.filter(s => ws !== s);
+  }
+
   stop() {
     clearInterval(this.id);
     delete this.id;
@@ -270,10 +292,12 @@ class Game {
   }
 
   send() {
-    this.dws.send(JSON.stringify({
+    const world = JSON.stringify({
       type: 'update',
       data: this.world.objs
-    }))
+    });
+
+    this.dws.forEach(ws => ws.send(world));
   }
 }
 
@@ -314,7 +338,11 @@ function initPad(ws) {
   const player = new Player(ws, 300, 300, 10, playerColor, 200, 1);
   world.add(player);
   
-  ws.on('message', function incoming(message) {
+  ws.on('close', function() {
+    world.remove(player);
+  });
+
+  ws.on('message', function(message) {
     const msg = JSON.parse(message);
 
     switch (msg.type) {
@@ -336,23 +364,21 @@ function initPad(ws) {
 }
 
 function initHost(ws) {
+  ws.on('message', function incoming(message) {
+    console.log('received: %s', message);
+  });
+
+  ws.on('close', function() {
+    game.removeHost(ws);
+  });
+
   if (!game) {
     game = new Game(world, ws);
     game.start();
-
-    // comp
-    ws.on('message', function incoming(message) {
-      console.log('received: %s', message);
-    });
-
-    ws.send(JSON.stringify({
-      type: 'init',
-      data: {
-        width: world.w,
-        height: world.h,
-      }
-    }));
   }
+
+  game.addHost(ws);
+  game.initHost(ws);
 }
 
 server.on('request', app);
