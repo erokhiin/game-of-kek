@@ -9,6 +9,7 @@ module.exports = {
   entry: {
     main: path.join(__dirname, 'app/main.js'),
     pad: path.join(__dirname, 'app/pad.js'),
+    test: path.join(__dirname, 'app/test.js'),
   },
   output: {
     path: path.join(__dirname, '/dist/'),
@@ -27,6 +28,12 @@ module.exports = {
       inject: 'body',
       chunks: ['pad'],
       filename: 'pad.html'
+    }),
+    new HtmlWebpackPlugin({
+      template: 'app/test.tpl.html',
+      inject: 'body',
+      chunks: ['test'],
+      filename: 'test.html'
     }),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.NoErrorsPlugin(),

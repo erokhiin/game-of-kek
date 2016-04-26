@@ -15,7 +15,6 @@ const WebSocketServer = require('ws').Server;
 const wss = new WebSocketServer({ server: server });
 
 const app = express();
-let isFirst = true;
 
 if (isDeveloping) {
   const compiler = webpack(config);
