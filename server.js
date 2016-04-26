@@ -226,7 +226,6 @@ class Player extends Circle {
   kill() {
     this.dead = true;
     this.frags = 0;
-    this.ws.send(JSON.stringify({type: 'disable'}));
   }
 
   update(world, dtTime) {
@@ -352,7 +351,12 @@ class Game {
       obj.update(this.world, dtTime);
     });
 
-    this.world.objs = this.world.objs.filter(obj => obj.hp > 5);
+    this.world.objs = this.world.objs.filter(obj => {
+      if (obj.hp < 5) {
+        obj.ws.send(JSON.stringify({type: 'disable'}));
+      }
+      return obj.hp > 5;
+    });
   }
 
   send() {
